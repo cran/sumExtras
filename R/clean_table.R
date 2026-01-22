@@ -92,14 +92,25 @@ clean_table <- function(tbl) {
             "\\bNA\\b",                  # Literal NA
             "\\bInf\\b",                 # Literal Inf
             "-Inf",                      # Negative Inf
+            "^0 \\(0\\)$",               # Exact: 0 (0)
             "^0 \\(0%\\)$",              # Exact: 0 (0%)
             "^0% \\(0\\.0+\\)$",         # Exact: 0% (0.000)
             "^0 \\(NA%\\)$",             # Exact: 0 (NA%)
+            "^0 \\(NA\\)$",              # Exact: 0 (NA)
+            "^NA \\(0\\)$",              # Exact: NA (0)
             "^NA \\(NA\\)$",             # Exact: NA (NA)
             "^NA \\(NA, NA\\)$",         # Exact: NA (NA, NA)
             "^0\\.0+ \\(0\\.0+%?\\)$",   # 0.00 (0.00) or 0.00 (0.00%)
             "^0\\.0+% \\(0\\.0+\\)$",    # 0.00% (0.00)
-            "^NA, NA$"                   # Exact: NA, NA
+            "^NA, NA$",                   # Exact: NA, NA
+            # Patterns with confidence intervals
+            "^0% \\(0\\.0+\\) \\(0%?, 0%?\\)$",           # 0% (0.000) (0%, 0%)
+            "^0\\.0+% \\(0\\.0+\\) \\(0\\.0+%?, 0\\.0+%?\\)$",  # 0.00% (0.00) (0.00%, 0.00%)
+            "^0 \\(0\\.0+\\) \\(0, 0\\)$",                # 0 (0.00) (0, 0)
+            "^0\\.0+ \\(0\\.0+\\) \\(0\\.0+, 0\\.0+\\)$", # 0.00 (0.00) (0.00, 0.00)
+            # Catch any trailing CI with all zeros
+            "\\(0%?, 0%?\\)$",                             # Ending with (0%, 0%) or (0, 0)
+            "\\(0\\.0+%?, 0\\.0+%?\\)$"                    # Ending with (0.00%, 0.00%)
           ), collapse = "|")
           if_else(grepl(na_pattern, ., perl = TRUE), NA_character_, .)
         }))
